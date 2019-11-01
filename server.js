@@ -1,7 +1,10 @@
 var http = require("http");
 var Scratch = require('scratch-api');
+var fs = require("fs")
 
-var PROJ_ID = 317357163;
+var tmp = JSON.parse(fs.readFileSync("config.json"));
+
+var PROJ_ID = tmp["project_id"];
 
 // var val  = cloud.get("☁ " + name);
 // cloud.set("☁ " + name.substr(0, name.length - 1), value);
@@ -69,26 +72,26 @@ function onHttpRequest(req, res) {
 		let result = "";
 		try {
 			if (query === null) {
-				result = "{\"status: \"error\", \"code\": 0, \"text\": \"No query specified.\"}";
+				result = "{\"status\": \"error\", \"code\": 0, \"text\": \"No query specified.\"}";
 			} else {
 				if (!query["type"]) {
-					result = "{\"status: \"error\", \"code\": 1, \"text\": \"Missing `type` field.\"}";
+					result = "{\"status\": \"error\", \"code\": 1, \"text\": \"Missing `type` field.\"}";
 				} else if (!query["name"]) {
-					result = "{\"status: \"error\", \"code\": 2, \"text\": \"Missing `name` field.\"}";
+					result = "{\"status\": \"error\", \"code\": 2, \"text\": \"Missing `name` field.\"}";
 				} else {
 					if (query["type"] === "get") {
 						let tmp = cloud.get("☁ " + query["name"]);
 						if (tmp !== undefined) {
-							result = "{\"status: \"ok\", \"result\": " + tmp.toString() + "}";
+							result = "{\"status\": \"ok\", \"result\": " + tmp.toString() + "}";
 						} else {
-							result = "{\"status: \"error\", \"code\": 4, \"text\": \"No such variable exists.\"}";
+							result = "{\"status\": \"error\", \"code\": 4, \"text\": \"No such variable exists.\"}";
 						}
 					} else if (query["type"] === "set") {
 						if (!query["value"]) {
-							result = "{\"status: \"error\", \"code\": 3, \"text\": \"Missing `value` field.\"}";
+							result = "{\"status\": \"error\", \"code\": 3, \"text\": \"Missing `value` field.\"}";
 						} else {
 							cloud.set("☁ " + query["name"], query["value"]);
-							result = "{\"status: \"ok\"}";
+							result = "{\"status\": \"ok\"}";
 						}
 					}
 				}
